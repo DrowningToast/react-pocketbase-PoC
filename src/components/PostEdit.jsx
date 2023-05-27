@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useRef } from "react";
 import { pbClient } from "../api/pocketbase";
 
-const PostEdit = ({ id, title, content, setEditing }) => {
+const PostEdit = ({ id, title, content, setEditing, fetchPosts }) => {
   const titleField = useRef(null);
   const contentField = useRef(null);
 
@@ -19,6 +19,7 @@ const PostEdit = ({ id, title, content, setEditing }) => {
       .update(id, { title: updatedTitle, content: updatedContent });
     alert("Post Edited");
     setEditing(false);
+    fetchPosts();
   };
 
   return (

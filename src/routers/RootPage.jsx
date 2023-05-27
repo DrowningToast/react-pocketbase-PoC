@@ -8,12 +8,16 @@ import CreatePostForm from "../components/CreatePostForm";
 const RootPage = () => {
   const [posts, setPosts] = useState([]);
 
-  // Fetch posts
-  useEffect(() => {
+  const fetchPosts = () => {
     pbClient
       .collection("posts")
       .getFullList()
       .then((posts) => setPosts(posts));
+  };
+
+  // Fetch posts
+  useEffect(() => {
+    fetchPosts();
   }, []);
 
   return (
@@ -27,6 +31,7 @@ const RootPage = () => {
               id={post.id}
               title={post.title}
               content={post.content}
+              fetchPosts={fetchPosts}
             />
           );
         })}

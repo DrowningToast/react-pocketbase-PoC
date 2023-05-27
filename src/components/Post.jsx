@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PostEdit from "./PostEdit";
 
-const Post = ({ id, title, content }) => {
+const Post = ({ id, title, content, fetchPosts }) => {
   const [isEditing, setEditing] = useState(false);
 
   const handleClickEdit = () => {
@@ -22,6 +22,7 @@ const Post = ({ id, title, content }) => {
             title={title}
             content={content}
             setEditing={setEditing}
+            fetchPosts={fetchPosts}
           />
         </>
       )}
