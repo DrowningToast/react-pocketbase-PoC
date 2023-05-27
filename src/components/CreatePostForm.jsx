@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { PostController } from "../api/PostController";
+import { pbClient } from "../api/pocketbase";
 
 const CreatePostForm = () => {
   const titleField = useRef(null);
@@ -8,9 +8,9 @@ const CreatePostForm = () => {
   const handleCreatePost = async () => {
     const title = titleField.current.value;
     const content = contentField.current.value;
-    await PostController.createPost({
-      title: title,
-      content: content,
+    pbClient.collection("posts").create({
+      title,
+      content,
       username: "Unknown",
     });
     alert("Post created");

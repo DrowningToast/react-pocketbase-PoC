@@ -1,7 +1,5 @@
-import { PostController } from "../api/PostController";
-import { useEffect } from "react";
-import { useState } from "react";
-import CreatePostForm from "../components/CreatePostForm";
+import { useRef } from "react";
+import { pbClient } from "../api/pocketbase";
 
 const RootPage = () => {
   const [posts, setPosts] = useState([]);
