@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { PostController } from "../api/PostController";
+import { pbClient } from "../api/pocketbase";
 
 const RootPage = () => {
   const titleField = useRef(null);
@@ -8,11 +8,14 @@ const RootPage = () => {
   const handleCreatePost = async () => {
     const title = titleField.current.value;
     const content = contentField.current.value;
-    await PostController.createPost({
+    // Post object
+    const post = {
       title: title,
       content: content,
       username: "Unknown",
-    });
+    };
+    // upload the post
+    await pbClient.collection("posts").create(post);
     alert("Post created");
   };
 
