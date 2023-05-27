@@ -17,7 +17,7 @@ const CreatePostForm = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-y-2 w-full">
       <label htmlFor="title" className="text-white">
         New Post
       </label>
