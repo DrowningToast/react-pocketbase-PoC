@@ -1,12 +1,18 @@
 import { useRef } from "react";
 import { pbClient } from "../api/pocketbase";
+import { useState } from "react";
+import { useEffect } from "react";
+import CreatePostForm from "../components/CreatePostForm";
 
 const RootPage = () => {
   const [posts, setPosts] = useState([]);
 
   // Fetch posts
   useEffect(() => {
-    PostController.getAllPosts().then((posts) => setPosts(posts));
+    pbClient
+      .collection("posts")
+      .getFullList()
+      .then((posts) => setPosts(posts));
   }, []);
 
   return (
@@ -20,6 +26,7 @@ const RootPage = () => {
               <p>{post.content}</p>
             </div>
           );
+          S;
         })}
       </div>
     </div>
