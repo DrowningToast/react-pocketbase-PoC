@@ -11,27 +11,15 @@ const PostEdit = ({ id, title, content, setEditing, fetchPosts }) => {
     contentField.current.value = content;
   }, [title, content]);
 
-  const handleUpdatePost = () => {
+  const handleUpdatePost = async () => {
     const updatedTitle = titleField.current.value;
     const updatedContent = contentField.current.value;
-    pbClient
+    await pbClient
       .collection("posts")
-      .update(id, { title: updatedTitle, content: updatedContent })
-      .then(() => {
-        alert("Post Edited");
-        setEditing(false);
-        fetchPosts();
-      });
-  };
-
-  const handleDeletePost = () => {
-    pbClient
-      .collection("posts")
-      .delete(id)
-      .then(() => {
-        alert("Post Deleted");
-        fetchPosts();
-      });
+      .update(id, { title: updatedTitle, content: updatedContent });
+    alert("Post Edited");
+    setEditing(false);
+    await fetchPosts();
   };
 
   return (
