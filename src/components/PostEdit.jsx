@@ -16,10 +16,22 @@ const PostEdit = ({ id, title, content, setEditing, fetchPosts }) => {
     const updatedContent = contentField.current.value;
     pbClient
       .collection("posts")
-      .update(id, { title: updatedTitle, content: updatedContent });
-    alert("Post Edited");
-    setEditing(false);
-    fetchPosts();
+      .update(id, { title: updatedTitle, content: updatedContent })
+      .then(() => {
+        alert("Post Edited");
+        setEditing(false);
+        fetchPosts();
+      });
+  };
+
+  const handleDeletePost = () => {
+    pbClient
+      .collection("posts")
+      .delete(id)
+      .then(() => {
+        alert("Post Deleted");
+        fetchPosts();
+      });
   };
 
   return (
@@ -36,6 +48,13 @@ const PostEdit = ({ id, title, content, setEditing, fetchPosts }) => {
         className="bg-blue-500 text-white font-semibold border-2 border-white"
       >
         Save
+      </button>
+      {/* Delete button */}
+      <button
+        onClick={handleDeletePost}
+        className="text-red-500 border-2 border-red-500 font-semibold"
+      >
+        Delete
       </button>
     </div>
   );
