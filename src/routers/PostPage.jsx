@@ -11,13 +11,24 @@ const PostPage = () => {
 
   const { id } = useParams();
 
+  const fetchComments = () => {
+    pbClient
+      .collection("comments")
+      .getFullList()
+      .then((comments) => setComments(comments));
+  };
+
   // fetch specific post
   useEffect(() => {
-    console.log(id);
     pbClient
       .collection("posts")
       .getOne(id)
       .then((post) => setPost(post));
+  }, []);
+
+  // after the post is fetched, fetch the comments next
+  useEffect(() => {
+    fetchComments();
   }, []);
 
   // post a new comment
@@ -30,6 +41,7 @@ const PostPage = () => {
     };
     await pbClient.collection("comments").create(comment);
     alert("Comment created");
+    fetchComments();
   };
 
   return (
@@ -53,6 +65,18 @@ const PostPage = () => {
         >
           Comment
         </button>
+      </div>
+      <h1 className="text-white">Comments: </h1>
+      {/* Display comments */}
+      <div className="flex flex-col gap-y-2">
+        {comments?.map((comment) => {
+          return (
+            <div className="bg-white px-8 py-4 flex flex-col gap-y-2 rounded-md">
+              <p className="text-lg">{comment.content}</p>
+              <span className="text-sm">Posted by: {comment.username}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
