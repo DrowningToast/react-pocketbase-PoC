@@ -22,6 +22,16 @@ const PostEdit = ({ id, title, content, setEditing, fetchPosts }) => {
     await fetchPosts();
   };
 
+  const handleDeletePost = async () => {
+    pbClient
+      .collection("posts")
+      .delete(id)
+      .then((res) => {
+        alert("Post deleted");
+        fetchPosts();
+      });
+  };
+
   return (
     <div className="flex flex-col gap-y-2 relative">
       <h1 className="text-4xl font-semibold">Edit Mode</h1>

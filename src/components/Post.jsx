@@ -1,15 +1,29 @@
 import { useState } from "react";
 import PostEdit from "./PostEdit";
+import { useNavigate } from "react-router";
 
 const Post = ({ id, title, content, fetchPosts }) => {
   const [isEditing, setEditing] = useState(false);
+  const navigate = useNavigate();
 
-  const handleClickEdit = () => {
+  const handleClickEdit = (e) => {
+    e.stopPropagation();
     setEditing(!isEditing);
   };
 
+  // go to specific post
+  const handleViewPost = () => {
+    navigate("/post/" + id);
+  };
+
   return (
-    <div className="bg-white px-6 py-4 rounded-md relative" key={id}>
+    <div
+      onClick={isEditing ? null : handleViewPost}
+      className={`bg-white px-6 py-4 rounded-md relative ${
+        isEditing ? "" : "cursor-pointer"
+      }`}
+      key={id}
+    >
       {!isEditing ? (
         <>
           <h2 className="text-2xl">{title}</h2>
