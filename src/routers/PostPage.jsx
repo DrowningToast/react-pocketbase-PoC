@@ -3,23 +3,33 @@ import { useEffect } from "react";
 import { useParams } from "react-router";
 import { pbClient } from "../api/pocketbase";
 import { useRef } from "react";
+import { motion } from "framer-motion";
+import { useAtom } from "jotai";
+import { testAtom } from "../components/CreatePostForm";
 
 const PostPage = () => {
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState(null);
   const commentField = useRef(null);
 
+  const [test, setTest] = useAtom(testAtom);
+
   const { id } = useParams();
 
   const fetchComments = () => {
     pbClient
       .collection("comments")
-      .getFullList()
+      .getFullList({
+        filter: `post='${id}'`,
+      })
       .then((comments) => setComments(comments));
   };
 
   // fetch specific post
   useEffect(() => {
+    // increment atom value
+    setTest(test + 100);
+
     pbClient
       .collection("posts")
       .getOne(id)
@@ -30,6 +40,8 @@ const PostPage = () => {
   useEffect(() => {
     fetchComments();
   }, []);
+
+  console.log(test);
 
   // post a new comment
   const handleCreateComment = async () => {
@@ -45,7 +57,7 @@ const PostPage = () => {
   };
 
   return (
-    <div className="px-16 py-12 w-full h-full">
+    <div className="px-16 py-12 w-full h-full overflow-x-hidden">
       {post && (
         <div className="bg-white w-full h-full flex flex-col gap-y-4 px-8 py-4">
           <div className="flex flex-col gap-y-1">
@@ -71,10 +83,23 @@ const PostPage = () => {
       <div className="flex flex-col gap-y-2">
         {comments?.map((comment) => {
           return (
-            <div className="bg-white px-8 py-4 flex flex-col gap-y-2 rounded-md">
+            <motion.div
+              initial={{
+                opacity: 0,
+                x: "100vw",
+              }}
+              animate={{
+                opacity: 1,
+                x: "0vw",
+                transition: {
+                  duration: 0.5,
+                },
+              }}
+              className="bg-white px-8 py-4 flex flex-col gap-y-2 rounded-md"
+            >
               <p className="text-lg">{comment.content}</p>
               <span className="text-sm">Posted by: {comment.username}</span>
-            </div>
+            </motion.div>
           );
         })}
       </div>

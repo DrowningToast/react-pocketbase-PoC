@@ -1,36 +1,42 @@
 import { useRef } from "react";
 import { pbClient } from "../api/pocketbase";
+import { useForm } from "react-hook-form";
+import { atom, useAtom } from "jotai";
+
+export const testAtom = atom(0);
 
 const CreatePostForm = () => {
-  const titleField = useRef(null);
-  const contentField = useRef(null);
+  const { register, handleSubmit } = useForm();
 
-  const handleCreatePost = async () => {
-    const title = titleField.current.value;
-    const content = contentField.current.value;
+  const [test, setTest] = useAtom(testAtom);
+
+  console.log(test);
+
+  const handleCreatePost = async (data) => {
+    // console.log(data);
     pbClient.collection("posts").create({
-      title,
-      content,
+      title: data.title,
+      content: data.content,
       username: "Unknown",
     });
     alert("Post created");
   };
 
   return (
-    <div className="flex flex-col gap-y-2 w-full">
+    <form
+      onSubmit={handleSubmit(handleCreatePost)}
+      className="flex flex-col gap-y-2 w-full"
+    >
       <label htmlFor="title" className="text-white">
         New Post
       </label>
-      <input className="w-full" type="text" ref={titleField} />
-      <textarea className="w-full" ref={contentField} />
-      <button
-        onClick={handleCreatePost}
+      <input {...register("title")} className="w-full" type="text" />
+      <textarea {...register("content")} className="w-full" />
+      <input
         className="border-2 border-white text-white px-8 w-full"
-        type="button"
-      >
-        Post
-      </button>
-    </div>
+        type="submit"
+      ></input>
+    </form>
   );
 };
 
