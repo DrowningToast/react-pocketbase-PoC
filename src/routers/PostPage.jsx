@@ -6,29 +6,23 @@ import { useRef } from "react";
 
 const PostPage = () => {
   const [post, setPost] = useState(null);
-  const [comments, setComments] = useState(null);
   const commentField = useRef(null);
 
   const { id } = useParams();
 
-  const fetchComments = () => {
-    pbClient
-      .collection("comments")
-      .getFullList()
-      .then((comments) => setComments(comments));
-  };
-
-  // fetch specific post
-  useEffect(() => {
+  // fetch a post
+  const fetchPost = () => {
     pbClient
       .collection("posts")
-      .getOne(id)
+      .getOne(id, {
+        expand: "comments",
+      })
       .then((post) => setPost(post));
-  }, []);
+  };
 
-  // after the post is fetched, fetch the comments next
+  // fetch a post once init
   useEffect(() => {
-    fetchComments();
+    fetchPost();
   }, []);
 
   // post a new comment
@@ -37,11 +31,16 @@ const PostPage = () => {
     const comment = {
       content,
       username: "Unknown",
-      post: id,
     };
-    await pbClient.collection("comments").create(comment);
+    // create comment
+    const record = await pbClient.collection("comments").create(comment);
+    // update post relations
+    await pbClient.collection("posts").update(id, {
+      "comments+": record.id,
+    });
+    commentField.current.value = "";
     alert("Comment created");
-    fetchComments();
+    fetchPost();
   };
 
   return (
@@ -69,7 +68,7 @@ const PostPage = () => {
       <h1 className="text-white">Comments: </h1>
       {/* Display comments */}
       <div className="flex flex-col gap-y-2">
-        {comments?.map((comment) => {
+        {post?.expand?.comments?.map((comment) => {
           return (
             <div className="bg-white px-8 py-4 flex flex-col gap-y-2 rounded-md">
               <p className="text-lg">{comment.content}</p>
