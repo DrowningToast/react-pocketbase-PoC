@@ -1,16 +1,15 @@
 import { useRef } from "react";
 import { pbClient } from "../api/pocketbase";
+import { useState } from "react";
 
 const CreatePostForm = () => {
-  const titleField = useRef(null);
-  const contentField = useRef(null);
+  const [titleValue, setTitle] = useState("");
+  const [contentValue, setContent] = useState("");
 
   const handleCreatePost = async () => {
-    const title = titleField.current.value;
-    const content = contentField.current.value;
     pbClient.collection("posts").create({
-      title,
-      content,
+      title: titleValue,
+      content: contentValue,
       username: "Unknown",
     });
     alert("Post created");
@@ -19,10 +18,19 @@ const CreatePostForm = () => {
   return (
     <div>
       <label htmlFor="title" className="text-white">
-        New Post
+        Post Title
       </label>
-      <input className="w-full" type="text" ref={titleField} />
-      <textarea className="w-full" ref={contentField} />
+      <input
+        onChange={(e) => setTitle(e.target.value)}
+        value={titleValue}
+        className="w-full"
+        type="text"
+      />
+      <textarea
+        onChange={(e) => setContent(e.target.value)}
+        value={contentValue}
+        className="w-full"
+      />
       <button
         onClick={handleCreatePost}
         className="border-2 border-white text-white px-8 w-full"
